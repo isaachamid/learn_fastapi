@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, Path, Body, Depends
 from pydantic import BaseModel
 from typing import Optional, List, Dict
+from auth.oauth2 import oauth2_scheme
 
 router = APIRouter(prefix='/blog', tags=['Blog'])
 
@@ -18,7 +19,7 @@ class BlogModel(BaseModel):
     image: Image = None
 
 @router.post('/new/{id}')
-def create_blog(blog: BlogModel, id: int, version: int = 1):
+def create_blog(blog: BlogModel, id: int, version: int = 1, token: str=Depends(oauth2_scheme)):
     return {'message': 'OK', 'data': blog, 'id': id, 'version': version}
 
 
