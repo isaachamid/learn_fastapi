@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from db.schemas import UserBase
 from db.models import User
 from db.hash import Hash
-
+from fastapi.exceptions import HTTPException
+from fastapi import status
 
 def create_user(db: Session, request: UserBase):
     user = User(
@@ -24,6 +25,11 @@ def find_by_id(id: int, db: Session):
     user = db.query(User).filter(User.id == id).first()
     return user
 
+def find_by_username(username: str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Not Found!')
+    return user
 
 def delete_by_id(id: int, db: Session):
     user = find_by_id(id, db)

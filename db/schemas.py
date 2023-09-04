@@ -31,3 +31,8 @@ class PostDisplay(BaseModel):
     caption: str
     timestamp: datetime
     user: User
+
+class UserAuth(BaseModel):
+    id: int
+    username: str
+    email: str

@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from db.schemas import PostBase
 from db.models import Post
 import datetime
-
+from fastapi.exceptions import HTTPException
+from fastapi import status
 
 def create_post(db: Session, request: PostBase):
     post = Post(
@@ -27,10 +28,17 @@ def find_by_id(id: int, db: Session):
     return post
 
 
-def delete_by_id(id: int, db: Session):
+def delete_by_id(id: int, user_id: int, db: Session):
     post = find_by_id(id, db)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    if post.user_id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    
     db.delete(post)
     db.commit()
+    db.refresh()
     return 'Post Deleted'
 
 
