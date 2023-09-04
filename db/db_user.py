@@ -1,4 +1,4 @@
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 from db.schemas import UserBase
 from db.models import User
 from db.hash import Hash
@@ -6,9 +6,9 @@ from db.hash import Hash
 
 def create_user(db: Session, request: UserBase):
     user = User(
-        username=request.username,
-        password=Hash.bcrypt(request.password),
-        email=request.email
+        username = request.username,
+        password = Hash.bcrypt(request.password),
+        email = request.email
     )
     db.add(user)
     db.commit()
